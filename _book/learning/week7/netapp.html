@@ -56,7 +56,7 @@
     <body>
         <!-- body:start -->
         
-    <div class="book" data-level="1.1.1" data-basepath="../.." data-revision="Fri Oct 09 2015 02:22:04 GMT-0600 (MDT)">
+    <div class="book" data-level="1.1.1" data-basepath="../.." data-revision="Fri Oct 09 2015 19:19:45 GMT-0600 (MDT)">
     
 
 <div class="book-summary">
@@ -404,7 +404,7 @@ He shared a data problem for our class to help solve.</p>
 <pre><code>= ( ( ( (UnixSeconds)/86400) + (DATE(1970,1,1) - (DATE(1900,1,1) ) ) ) +0 )
 </code></pre><p>Save the file as &apos;netapp.xlsx&apos; and use Tableau to plot the &apos;Observation Time Stamp&apos; and the &apos;Base Time Stamp&apos; to check the timestamps &quot;sensibility&quot;.</p>
 <p>Figure 2-1: Base Time Stamps from &apos;netapp.csv&apos;</p>
-<p><img src="Time-Stamps.png" alt="screenshot"></p>
+<p><img src="NetAppDataAnalysis_files/Time-Stamps.png" alt="screenshot"></p>
 <p>Figure 2-1 shows three different views of the &apos;Base Time Stamps&apos; and one view of &apos;Observation Time Stamp&apos; in the &apos;netapp.csv&apos; file.  From left-to-right:</p>
 <ul>
 <li>The chart on the left shows the &apos;Base Time Stamps&apos; from the entire file: note the &apos;Base Time Stamps&apos; range from 1970 to 2017.</li>
@@ -427,24 +427,29 @@ He shared a data problem for our class to help solve.</p>
 <p>We now have a text file in MS-DOS format which uses a Carriage-Return (\r) instead of a newline (\n) to delimit new lines.  We also need to get rid of any samples not in the period of Jan-Jul, 2015.  We&apos;ll use a couple of standard Unix/Linux text processing tools to translate the carraige returns to newlines and then filter all of the lines which are each a sample row of netapp.csv text:</p>
 <pre><code>prompt&gt; cat netapp-msdos.txt | tr &apos;\r&apos; &apos;\n&apos; | grep 2015 | grep -v Oct &gt; netapp-2015
 </code></pre><p>We can then open the space-delimited &apos;netapp-2015&apos; file with Excel and save as an Excel file just so we can read into Tableau.</p>
-<p><img src="Release-vs-Deltatime.png" alt="screenshot"></p>
-<p>The problem with the above graph is that the average deltatime is badly skewed by exorbinantly large deltatime values.  This is an area where additional scripts are required to filter the data in order to give meaningful visualizations.  However, at a glance the &apos;Galena&apos; Release seems to have significantly more samples with exorbinantly large deltatimes than the &apos;Illinois&apos; or the &apos;Kingston&apos; Release.</p>
+<p>Figure 2-2: &apos;netapp.csv&apos; Release vs. Delta Time</p>
+<p><img src="NetAppDataAnalysis_files/Release-vs-Deltatime.png" alt="screenshot"></p>
+<p>The problem with the above graph (Figure 2-2) is that the average deltatime is badly skewed by exorbinantly large deltatime values.  This is an area where additional scripts are required to filter the data in order to give meaningful visualizations.  However, at a glance the &apos;Galena&apos; Release seems to have significantly more samples with exorbinantly large deltatimes than the &apos;Illinois&apos; or the &apos;Kingston&apos; Release.</p>
 <ul>
 <li><a href="http://github.com/pail4944" target="_blank">Parker Illig</a>: Is there a relationship between delta time and SW version?</li>
 </ul>
-<p>(answer)</p>
+<p><img src="NetAppDataAnalysis_files/softwareavgmed.png" alt="screenshot"></p>
+<p>This is a question Tableau couldn&apos;t, or at least couldn&apos;t easily, visualize. The graph shows each group of software versions and gives each version two bars, the average delta time in blue and the average median time in orange. In order to show the median, which was much smaller than most averages, I had to use logarithmic scaling to get any kind of comparison between the two values. Most of the bars in the graph show their medians&apos; around the 24 hours mark, but averages usually were much greater than the mean due to the logarithmic scaling. This shows that most software versions had data points that were huge, meaning that each software version had significant issues. Due to these consistently bad results, I was unable to show any correlation between software version and delta time without using custom scripts to do more intensive filtering.</p>
 <ul>
 <li><a href="http://github.com/DomoYeti" target="_blank">Robert Kendl</a>:  Is there a relationship between delta time and FW version?</li>
 </ul>
-<p>(answer)</p>
+<p><img src="NetAppDataAnalysis_files/rkendl.png" alt="screenshot"></p>
+<p>I computed the average delta times for each firmware version and put it into three colors. The green bars are way too high for a delta time of about a day (over 100,000 I believe) and the red bars are too low (under 60,000). As you can see, there&apos;s only one bar that is yellow, which means it gives pretty reliable delta times of around 84,000.</p>
 <ul>
 <li><a href="http://github.com/drewdinger" target="_blank">Andrew Krodinger</a>: Is there any correlation between which controller sent the data and the median delta time?</li>
 </ul>
-<p>(answer)</p>
+<p><img src="NetAppDataAnalysis_files/controller.png" alt="screenshot"></p>
+<p>No, there is no correlation between the controller and the median time. Both Controllers A and B are within a 1% difference between the median time and 24 hours (86,400 seconds). Controller A&apos;s time is 99.85% of a day and Controller B&apos;s median time is 99.995% of a day. This shows me that both controllers are functioning properly for the most part. We can draw no correlation between which controller sent the data and the amount of bad data that was received. What we can see is that when data is asked to be sent from Controller B instead of the primary Controller A, there is no significant change in the median delta time. From this data I believe that it is unnecessary to continue to retrieve Controller information. This would reduce the size of the data that Brian is collecting, or would allow him to replace the Controller section of data with one that may provide more insight into what is really going on.</p>
 <ul>
 <li><a href="http://github.com/jraesly" target="_blank">John Raesly</a>:</li>
 </ul>
-<p>(answer)</p>
+<p><img src="NetAppDataAnalysis_files/raesly.png" alt="screenshot"></p>
+<p>It does seem that there is a correlation between date and delta time. The delta time has decreased over time dramatically. This brings a follow up question of why this is happening?</p>
 <h1 id="further-analysis">Further Analysis</h1>
 <p>Our team determines the following questions are too complex for Tableau and
 require custom scripts to be written.</p>

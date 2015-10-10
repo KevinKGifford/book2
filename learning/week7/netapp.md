@@ -41,7 +41,7 @@ Save the file as 'netapp.xlsx' and use Tableau to plot the 'Observation Time Sta
 
 Figure 2-1: Base Time Stamps from 'netapp.csv'
 
-![screenshot](Time-Stamps.png)
+![screenshot](NetAppDataAnalysis_files/Time-Stamps.png)
 
 Figure 2-1 shows three different views of the 'Base Time Stamps' and one view of 'Observation Time Stamp' in the 'netapp.csv' file.  From left-to-right:
 * The chart on the left shows the 'Base Time Stamps' from the entire file: note the 'Base Time Stamps' range from 1970 to 2017.
@@ -66,30 +66,37 @@ We now have a text file in MS-DOS format which uses a Carriage-Return (\r) inste
 
 We can then open the space-delimited 'netapp-2015' file with Excel and save as an Excel file just so we can read into Tableau.
 
-![screenshot](Release-vs-Deltatime.png)
+Figure 2-2: 'netapp.csv' Release vs. Delta Time
 
-The problem with the above graph is that the average deltatime is badly skewed by exorbinantly large deltatime values.  This is an area where additional scripts are required to filter the data in order to give meaningful visualizations.  However, at a glance the 'Galena' Release seems to have significantly more samples with exorbinantly large deltatimes than the 'Illinois' or the 'Kingston' Release.
+![screenshot](NetAppDataAnalysis_files/Release-vs-Deltatime.png)
+
+The problem with the above graph (Figure 2-2) is that the average deltatime is badly skewed by exorbinantly large deltatime values.  This is an area where additional scripts are required to filter the data in order to give meaningful visualizations.  However, at a glance the 'Galena' Release seems to have significantly more samples with exorbinantly large deltatimes than the 'Illinois' or the 'Kingston' Release.
 
 
 *  [Parker Illig](http://github.com/pail4944): Is there a relationship between delta time and SW version?
 
-(answer)
+![screenshot](NetAppDataAnalysis_files/softwareavgmed.png)
 
+This is a question Tableau couldn't, or at least couldn't easily, visualize. The graph shows each group of software versions and gives each version two bars, the average delta time in blue and the average median time in orange. In order to show the median, which was much smaller than most averages, I had to use logarithmic scaling to get any kind of comparison between the two values. Most of the bars in the graph show their medians' around the 24 hours mark, but averages usually were much greater than the mean due to the logarithmic scaling. This shows that most software versions had data points that were huge, meaning that each software version had significant issues. Due to these consistently bad results, I was unable to show any correlation between software version and delta time without using custom scripts to do more intensive filtering.
 
 * [Robert Kendl](http://github.com/DomoYeti):  Is there a relationship between delta time and FW version?
 
-(answer)
+![screenshot](NetAppDataAnalysis_files/rkendl.png)
+
+I computed the average delta times for each firmware version and put it into three colors. The green bars are way too high for a delta time of about a day (over 100,000 I believe) and the red bars are too low (under 60,000). As you can see, there's only one bar that is yellow, which means it gives pretty reliable delta times of around 84,000.
 
 
 * [Andrew Krodinger](http://github.com/drewdinger): Is there any correlation between which controller sent the data and the median delta time?
 
-(answer)
+![screenshot](NetAppDataAnalysis_files/controller.png)
 
+No, there is no correlation between the controller and the median time. Both Controllers A and B are within a 1% difference between the median time and 24 hours (86,400 seconds). Controller A's time is 99.85% of a day and Controller B's median time is 99.995% of a day. This shows me that both controllers are functioning properly for the most part. We can draw no correlation between which controller sent the data and the amount of bad data that was received. What we can see is that when data is asked to be sent from Controller B instead of the primary Controller A, there is no significant change in the median delta time. From this data I believe that it is unnecessary to continue to retrieve Controller information. This would reduce the size of the data that Brian is collecting, or would allow him to replace the Controller section of data with one that may provide more insight into what is really going on.
 
 * [John Raesly](http://github.com/jraesly):
 
-(answer)
+![screenshot](NetAppDataAnalysis_files/raesly.png)
 
+It does seem that there is a correlation between date and delta time. The delta time has decreased over time dramatically. This brings a follow up question of why this is happening?
 
 # Further Analysis
 
