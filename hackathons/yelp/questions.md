@@ -15,11 +15,11 @@ Three example of specific questions in this class are:
 Come up with five additional question classes. Each must have two or three
 variables.
 
-## (Question template)
+## What businesses have category (W) in city (X) with at least (Y) reviews and at least a rating of (Z)?
 Three example of specific questions in this class are:
-* (specific question)
-* (specific question)
-* (specific question)
+* What businesses have category 'Medical' in 'Phoenix' with at least '100' reviews and at least a rating of '3.0'?
+* What businesses have category 'Shopping' in 'Pittsburgh' with at least '50' reviews and at least a rating of '3.5'?
+* What businesses have category 'Sports' in 'Denver' with at least '200' reviews and a rating of at least '4.0'?
 
 ## (Question template)
 Three example of specific questions in this class are:

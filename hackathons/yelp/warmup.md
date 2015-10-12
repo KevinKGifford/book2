@@ -30,23 +30,29 @@ $.get('http://bigdatahci2015.github.io/data/yelp/yelp_academic_dataset_business.
 
         console.log('number of items loaded:', items.length)
 
-        console.log('first item', items[0])
+        // Show in the myviz that the data is loaded
+        $('.myviz').html('number of records load:' + data.length)
+
+        console.log('1st item', items[0])
+        console.log('2nd item', items[1])
+        console.log('3rd item', items[2])
+        console.log('4th item', items[3])
      })
      .error(function(e){
          console.error(e)
      })
 
-function viz(arg1, arg2, arg3){    
+function viz(arg1, sortDirection){    
 
     // define a template string
-    var tplString = '<g transform="translate(0 ${d.y})"> \
-                    <text y="20">${d.label}</text> \
-                    <rect x="30"   \
-                         width="${d.width}" \
-                         height="20"    \
-                         style="fill:${d.color};    \
-                                stroke-width:3; \
-                                stroke:rgb(0,0,0)" />   \
+    var tplString = '<g transform="translate(0 ${d.y})">      \
+                    <text y="20">${d.label}</text>            \
+                    <rect x="30"                              \
+                         width="${d.width}"                   \
+                         height="20"                          \
+                         style="fill:${d.color};              \
+                                stroke-width:3;               \
+                                stroke:rgb(0,0,0)" />         \
                     </g>'
 
     // compile the string to get a template function
@@ -68,24 +74,27 @@ function viz(arg1, arg2, arg3){
         return 'red'
     }
 
-    // TODO: group items based on the attribute specified by users
+    // Group items based on the attribute specified by users
 
-    var groups = _.groupBy(items, 'stars')
-    console.log('groups', groups)
+    var groups = _.groupBy(items, arg1)
+    console.log('groups:', groups)
 
-    var pairs = _.pairs(groups)
-
-    // TODO: sort pairs in the order specified by users
+    console.log('sortDirection', sortDirection)
+    var pairs = _.sortBy(_.pairs(groups), function(d) {
+        // return (sortDirection * d[1])
+        return d[1]
+    })
 
     var viz = _.map(pairs, function(d, i){                
-                return {
-                    x: computeX(d, i),
-                    y: computeY(d, i),
-                    width: computeWidth(d, i),
-                    color: computeColor(d, i),
-                    label: d[0]
-                }
-             })
+            return {
+                x: computeX(d, i),
+                y: computeY(d, i),
+                width: computeWidth(d, i),
+                color: computeColor(d, i),
+                label: d[0]
+            }
+         })
+
     console.log('viz', viz)
 
     var result = _.map(viz, function(d){
@@ -98,10 +107,12 @@ function viz(arg1, arg2, arg3){
 }
 
 $('button#viz').click(function(){    
-    var arg1 = 'TODO'
-    var arg2 = 'TODO'
-    var arg3 = 'TODO'    
-    viz(arg1, arg2, arg3)
+    var arg1 = $('input#arg1').val()
+    var arg2 = $('input#arg2').val()
+    console.log('arg2', arg2)
+    var sort = 1
+    if (arg2 == 'Descending' || arg2 == 'descending') {sort = -1}
+    viz(arg1, sort)
 })  
 
 {% endscript %}

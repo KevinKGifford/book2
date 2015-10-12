@@ -1,18 +1,18 @@
 # UI
 
-Pick one question class and build an exploratory visualization interface for it.
-The question class you pick must have at least three variables that can be changed.
-
-## (Question class)
+## What businesses have category (W) in city (X) with at least (Y) reviews and at least a rating of (Z)?
 
 <div style="border:1px grey solid; padding:5px;">
-    <div><h5>X</h5>
+    <div><h5>Category</h5>
+        <input id="arg0" type="text" value="something"/>
+    </div>
+    <div><h5>City</h5>
         <input id="arg1" type="text" value="something"/>
     </div>
-    <div><h5>Y</h5>
+    <div><h5>Minimum Number of Reviews</h5>
         <input id="arg2" type="text" value="something"/>
     </div>
-    <div><h5>Z</h5>
+    <div><h5>Minimum Rating (0.0 - 5.0)</h5>
         <input id="arg2" type="text" value="something"/>
     </div>    
     <div style="margin:20px;">
@@ -36,13 +36,16 @@ $.get('http://bigdatahci2015.github.io/data/yelp/yelp_academic_dataset_business.
 
         console.log('number of items loaded:', items.length)
 
+        // Show in the myviz that the data is loaded
+        $('.myviz').html('number of records load:' + data.length)
+
         console.log('first item', items[0])
      })
      .error(function(e){
          console.error(e)
      })
 
-function viz(arg1, arg2, arg3){    
+function viz(arg0, arg1, arg2, arg3) {    
 
     // define a template string
     var tplString = '<g transform="translate(0 ${d.y})"> \
@@ -103,10 +106,11 @@ function viz(arg1, arg2, arg3){
 }
 
 $('button#viz').click(function(){    
+    var arg0 = 'TODO'
     var arg1 = 'TODO'
     var arg2 = 'TODO'
     var arg3 = 'TODO'    
-    viz(arg1, arg2, arg3)
+    viz(arg0, arg1, arg2, arg3)
 })  
 
 {% endscript %}
@@ -114,8 +118,11 @@ $('button#viz').click(function(){
 # Authors
 
 This UI is developed by
-* [Full name](link to github account)
-* [Full name](link to github account)
-* [Full name](link to github account)
-* [Full name](link to github account)
-* [Full name](link to github account)
+* [William Farmer](http://github.com/willzfarmer)
+* [Kevin Gifford](http://github.com/kevinkgifford)
+* [Parker Illig](http://github.com/pail4944)
+* [Robert Kendl](http://github.com/DomoYeti)
+* [Andrew Krodinger](http://github.com/drewdinger)
+* [John Raesly](http://github.com/jraesly)
+
+

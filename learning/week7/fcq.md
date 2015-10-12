@@ -157,7 +157,6 @@ function vizGroupByAttribute(attributeName){
 
     function computeLabel(d, i) {
         var label = d.name + ": " + d['count']
-        // return d['count']
         return label
     }
 
