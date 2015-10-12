@@ -233,7 +233,7 @@ function vizAsHorizontalLabelBars() {
 
 $('button#viz-attack-defense').click(vizAsHorizontalLabelBars)
 
-// Visualize the speed points vs. defense
+// TODO: add code visualize the speed points vs. defense
 // points as side-by-side horizontal bar charts (with labels)
 
 function vizSpeedDefense() {
@@ -316,76 +316,6 @@ $('button#viz-speed-defense').click(vizSpeedDefense)
 
 // TODO: add code to visualize the attack points in ascending order as a
 // series of horizontal bar charts (with labels)
-
-function vizAttackSortedAsc() {
-
-    // define a template string
-    var tplString = '<g transform="translate(0 ${d.y})">     \
-                    <rect                                    \
-                         width="${d.width}"                  \
-                         height="20"                         \
-                         style="fill:${d.color};             \
-                                stroke-width:3;              \
-                                stroke:rgb(0,0,0)" />        \
-                         <text transform="translate(0 15)">  \
-                             ${d.label}                      \
-                         </text>                             \
-                    </g>'
-
-    // compile the string to get a template function
-    var template = _.template(tplString)
-
-    function computeX(d, i) {
-        return 0
-    }
-
-    function computeWidth(d, i) {
-        return d.Attack
-    }
-
-    function computeY(d, i) {
-        return i * 20
-    }
-
-    function computeColor(d, i) {
-        return 'red'
-    }
-
-    function computeLabel(d, i) {
-        return d.Name
-    }
-
-    var groups = _.groupBy(pokemonData, 'Name')
-    var output =_.mapValues(groups, function(d) {
-        return d.attack
-    })
-
-    // Convert object to array and sort in ascending order 
-    var sorted_output = _.sortByOrder(_.pairs(output),function(d) {
-        return d[1]
-    },'asc')
-
-    var viz = _.map(sorted_output, function(d, i) {
-                return {
-                    x: computeX(d, i),
-                    y: computeY(d, i),
-                    width: computeWidth(d, i),
-                    color: computeColor(d, i),
-                    label: computeLabel(d, i)
-                }
-             })
-    console.log('viz', viz)
-
-    var result = _.map(viz, function(d){
-             // invoke the compiled template function on each viz data
-             return template({d: d})
-         })
-    console.log('result', result)
-
-    $('.myviz').html('<svg>' + result + '</svg>')
-}
-
-$('button#viz-horizontal-sorted').click(vizAttackSortedAsc)
 
 // TODO: add code to visualize the attack points in descending order as a
 // series of horizontal bar charts (with labels)
