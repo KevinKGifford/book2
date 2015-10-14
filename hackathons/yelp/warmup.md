@@ -34,9 +34,6 @@ $.get('http://bigdatahci2015.github.io/data/yelp/yelp_academic_dataset_business.
         $('.myviz').html('number of records load:' + data.length)
 
         console.log('1st item', items[0])
-        console.log('2nd item', items[1])
-        console.log('3rd item', items[2])
-        console.log('4th item', items[3])
      })
      .error(function(e){
          console.error(e)
@@ -81,8 +78,7 @@ function viz(arg1, sortDirection){
 
     console.log('sortDirection', sortDirection)
     var pairs = _.sortBy(_.pairs(groups), function(d) {
-        // return (sortDirection * d[1])
-        return d[1]
+        return sortDirection * d[1].length
     })
 
     var viz = _.map(pairs, function(d, i){                

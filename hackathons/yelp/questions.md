@@ -15,32 +15,38 @@ Three example of specific questions in this class are:
 Come up with five additional question classes. Each must have two or three
 variables.
 
-## What businesses have category (W) in city (X) with at least (Y) reviews and at least a rating of (Z)?
+## Kevin Gifford: What businesses have category (W) in city (X) with at least (Y) reviews and at least a rating of (Z)?
 Three example of specific questions in this class are:
 * What businesses have category 'Medical' in 'Phoenix' with at least '100' reviews and at least a rating of '3.0'?
 * What businesses have category 'Shopping' in 'Pittsburgh' with at least '50' reviews and at least a rating of '3.5'?
-* What businesses have category 'Sports' in 'Denver' with at least '200' reviews and a rating of at least '4.0'?
+* What businesses have category 'Sports' in 'Tuscon' with at least '200' reviews and a rating of at least '4.0'?
 
-## (Question template)
+## Will Farmer: What businesses per State (X) have the most stars (Y), and what Longitude (Z) is the best?
 Three example of specific questions in this class are:
-* (specific question)
-* (specific question)
-* (specific question)
+* What Longitude in Colorado has the most stars?
+* What Longitude in Wyoming has the most stars?
+* What Longitude in Texas has the most stars?
 
-## (Question template)
+## Parker Illig: What's the avg rating (X) in city (Y)?
 Three example of specific questions in this class are:
-* (specific question)
-* (specific question)
-* (specific question)
+* What's the most avg rating in Pittsburgh?
+* What's the most avg rating in Raleigh?
+* What's the most avg rating in Phoenix?
 
-## (Question template)
+## Robert Kendl: What businesses in city (X) are open currently (Y) with a rating of (Z)?
 Three example of specific questions in this class are:
-* (specific question)
-* (specific question)
-* (specific question)
+* What businesses in Denver have closing hours 10:00 with a rating of 4.0?
+* What businesses in New York have closing hours 8:00 with a rating of 3.5?
+* What businesses in Savannah have closing hours 9:00 with a rating of 4.5?
 
-## (Question template)
+## Andrew Krodinger: What is the most popular category (X) in state (Y)
 Three example of specific questions in this class are:
-* (specific question)
-* (specific question)
-* (specific question)
+* What's the most popular category in Pennsylvania?
+* What's the most popular category in North Carolina?
+* What's the most popular category in Arizona?
+
+## John Raesly: What city (X) in state (Y) has the highest rating for category (Z)?
+Three example of specific questions in this class are:
+* 
+* 
+* 

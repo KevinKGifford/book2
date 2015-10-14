@@ -4,16 +4,16 @@
 
 <div style="border:1px grey solid; padding:5px;">
     <div><h5>Category</h5>
-        <input id="arg0" type="text" value="something"/>
+        <input id="arg0" type="text" value="Mexican"/>
     </div>
     <div><h5>City</h5>
-        <input id="arg1" type="text" value="something"/>
+        <input id="arg1" type="text" value="Phoenix"/>
     </div>
     <div><h5>Minimum Number of Reviews</h5>
-        <input id="arg2" type="text" value="something"/>
+        <input id="arg2" type="text" value="200"/>
     </div>
     <div><h5>Minimum Rating (0.0 - 5.0)</h5>
-        <input id="arg2" type="text" value="something"/>
+        <input id="arg3" type="text" value="4.0"/>
     </div>    
     <div style="margin:20px;">
         <button id="viz">Vizualize</button>
@@ -49,13 +49,14 @@ function viz(arg0, arg1, arg2, arg3) {
 
     // define a template string
     var tplString = '<g transform="translate(0 ${d.y})"> \
-                    <text y="20">${d.label}</text> \
-                    <rect x="30"   \
+                    <text y="15">${d.label}</text> \
+                    <rect x="400"   \
                          width="${d.width}" \
                          height="20"    \
                          style="fill:${d.color};    \
                                 stroke-width:3; \
                                 stroke:rgb(0,0,0)" />   \
+                    <text x=405 y="15">${d.label2}</text> \
                     </g>'
 
     // compile the string to get a template function
@@ -66,7 +67,7 @@ function viz(arg0, arg1, arg2, arg3) {
     }
 
     function computeWidth(d, i) {        
-        return i * 20 + 20
+        return d.stars * 50
     }
 
     function computeY(d, i) {
@@ -78,38 +79,66 @@ function viz(arg0, arg1, arg2, arg3) {
     }
 
     function computeLabel(d, i) {
-        return 'f' + i
+        return d.name + ' (reviews: ' + d.review_count + ')'
     }
 
-    // TODO: modify the logic here based on your UI
-    // take the first 20 items to visualize    
-    items = _.take(items, 20)
+    function computeLabel2(d, i) {
+        return ' Rating: ' + d.stars
+    }
 
-    var viz = _.map(items, function(d, i){                
-                return {
-                    x: computeX(d, i),
-                    y: computeY(d, i),
-                    width: computeWidth(d, i),
-                    color: computeColor(d, i),
-                    label: computeLabel(d, i)
-                }
-             })
-    console.log('viz', viz)
+    // UI processing logic
+
+    console.log(arg0); console.log(arg1); console.log(arg2); console.log(arg3);
+
+
+    var filter_city = _.filter(items, function(d) {
+        return (d.city == arg1)
+    })
+    var filter_reviews = _.filter(filter_city, function(d) {
+        return (d.review_count >= parseInt(arg2))
+    })
+    var filter_stars = _.filter(filter_reviews, function(d) {
+        return (d.stars >= parseFloat(arg3))
+    })
+
+    // Have filtered 'items' based on city, #reviews and rating (stars)
+    // Find all objects with a category element matching user input 'arg0'
+
+    console.log('first filter_stars', filter_stars[0])
+
+    var filter_categories = _.filter(filter_stars, function(f) {
+        return _.some(f.categories, function(d) {
+            return d == arg0
+        })
+    })
+
+    // Take the first 20 items to visualize    
+    items = _.take(filter_categories, 20)
+
+    var viz = _.map(items, function(d, i) {                
+        return {
+            x: computeX(d, i),
+            y: computeY(d, i),
+            width: computeWidth(d, i),
+            color: computeColor(d, i),
+            label: computeLabel(d, i),
+            label2: computeLabel2(d, i)
+        }
+    })
 
     var result = _.map(viz, function(d){
-             // invoke the compiled template function on each viz data
-             return template({d: d})
-         })
-    console.log('result', result)
+        // invoke the compiled template function on each viz data
+        return template({d: d})
+    })
 
     $('.myviz').html('<svg width="100%" height="100%">' + result + '</svg>')
 }
 
 $('button#viz').click(function(){    
-    var arg0 = 'TODO'
-    var arg1 = 'TODO'
-    var arg2 = 'TODO'
-    var arg3 = 'TODO'    
+    var arg0 = $('input#arg0').val()
+    var arg1 = $('input#arg1').val()
+    var arg2 = $('input#arg2').val()
+    var arg3 = $('input#arg3').val()
     viz(arg0, arg1, arg2, arg3)
 })  
 
