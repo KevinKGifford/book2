@@ -113,9 +113,9 @@ function viz(arg0, arg1, arg2, arg3) {
     })
 
     // Take the first 20 items to visualize    
-    items = _.take(filter_categories, 20)
+    var vizItems = _.take(filter_categories, 20)
 
-    var viz = _.map(items, function(d, i) {                
+    var viz = _.map(vizItems, function(d, i) {                
         return {
             x: computeX(d, i),
             y: computeY(d, i),
