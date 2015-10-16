@@ -5,7 +5,7 @@
         <!-- head:start -->
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <title>Click | book2</title>
+        <title>Team | book2</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="generator" content="GitBook 2.5.0-beta.4">
@@ -57,10 +57,10 @@
         
     
     
-    <link rel="next" href="../../learning/week7/jquery-form.html" />
+    <link rel="next" href="../../learning/week8/q1.html" />
     
     
-    <link rel="prev" href="../../learning/week7/netapp.html" />
+    <link rel="prev" href="../../learning/week8/index.html" />
     
 
         <!-- head:end -->
@@ -68,7 +68,7 @@
     <body>
         <!-- body:start -->
         
-    <div class="book" data-level="1.1.2" data-basepath="../.." data-revision="Thu Oct 15 2015 18:27:48 GMT-0600 (MDT)">
+    <div class="book" data-level="1.2.1" data-basepath="../.." data-revision="Thu Oct 15 2015 18:27:48 GMT-0600 (MDT)">
     
 
 <div class="book-summary">
@@ -143,7 +143,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.1.2" data-path="learning/week7/jquery-click.html">
+        <li class="chapter " data-level="1.1.2" data-path="learning/week7/jquery-click.html">
             
                 
                     <a href="../../learning/week7/jquery-click.html">
@@ -254,7 +254,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.2.1" data-path="learning/week8/team.html">
+        <li class="chapter active" data-level="1.2.1" data-path="learning/week8/team.html">
             
                 
                     <a href="../../learning/week8/team.html">
@@ -459,79 +459,123 @@
                 
                     <section class="normal" id="section-">
                     
-                        <h1 id="jquery-click-handler">JQuery Click Handler</h1>
-<ol>
-<li><button id="hello">Hello</button> Display Hello </li>
-<li><button id="hi">Hi</button> Display Hi </li>
-<li><button id="taller">Taller</button> Make it taller</li>
-<li><button id="shorter">Shorter</button> Make it shorter</li>
-<li><button id="red">Red</button> Set background color to red</li>
-<li><button id="green">Green</button> Set background color to green</li>
-<li><button id="onebar">One Bar</button></li>
-<li><button id="twobars">Two Bars</button></li>
-<li><button id="fivebars">Five Bars</button></li>
-<li><button id="fivegreenbars">Five Green Bars</button></li>
-</ol>
+                        <h1 id="ui">UI</h1>
+<p>Pick one question class and build an exploratory visualization interface for it.
+The question class you pick must have at least three variables that can be changed.</p>
+<h2 id="-question-class">(Question class)</h2>
+<div style="border:1px grey solid; padding:5px;">
+    <div><h5>X</h5>
+        <input id="arg1" type="text" value="something">
+    </div>
+    <div><h5>Y</h5>
+        <input id="arg2" type="text" value="something">
+    </div>
+    <div><h5>Z</h5>
+        <input id="arg2" type="text" value="something">
+    </div>    
+    <div style="margin:20px;">
+        <button id="viz">Vizualize</button>
+    </div>
+</div>
 
-<h2 id="viz">Viz</h2>
-<div class="myviz" style="width:100%; height:100px; border: 1px black solid;"> </div>
+<div class="myviz" style="width:100%; height:500px; border: 1px black solid; padding: 5px;">
+Data is not loaded yet
+</div>
 
+<p><pre><code>items = &apos;not loaded yet&apos;
 
-<p><pre><code>console.log(&apos;adding click event handlers&apos;)
+console.log(&apos;lodash version:&apos;, _.VERSION)
 
-$(&apos;button#hello&apos;).click(function(){
-    console.log(&apos;hello button is clicked&apos;)
-    $(&apos;.myviz&apos;).html(&quot;hello&quot;)
-})
+$.get(&apos;http://bigdatahci2015.github.io/data/yelp/yelp_academic_dataset_business.5000.json.lines.txt&apos;)
+    .success(function(data){        
+        var lines = data.trim().split(&apos;\n&apos;)
 
-$(&apos;button#hi&apos;).click(function(){
-    console.log(&apos;hello button is clicked&apos;)
-    $(&apos;.myviz&apos;).html(&quot;hi&quot;)
-})
+        // convert text lines to json arrays and save them in `items`
+        items = _.map(lines, JSON.parse)
 
-$(&apos;button#taller&apos;).click(function(){
-    console.log(&apos;taller button is clicked&apos;)
-    $(&apos;.myviz&apos;).height(500)
-})
+        console.log(&apos;number of items loaded:&apos;, items.length)
 
-$(&apos;button#shorter&apos;).click(function(){
-    console.log(&apos;shorter button is clicked&apos;)
-    $(&apos;.myviz&apos;).height(100)
-})
+        console.log(&apos;first item&apos;, items[0])
+     })
+     .error(function(e){
+         console.error(e)
+     })
 
-// FIXME: Event handler for the &quot;Red&quot; button to set the background color of the viz block to red
-$(&apos;button#red&apos;).click(function(){
-    console.log(&apos;red button is clicked&apos;)
-    $(&apos;.myviz&apos;).css(&apos;background-color&apos;,&apos;red&apos;)
-})
+function viz(arg1, arg2, arg3){    
 
-// FIXME: Event handler for the &quot;Green&quot; button to set the background color of the viz block to green
-$(&apos;button#green&apos;).click(function(){
-    console.log(&apos;green button is clicked&apos;)
-    $(&apos;.myviz&apos;).css(&apos;background-color&apos;,&apos;green&apos;)
-})
+    // define a template string
+    var tplString = &apos;&lt;g transform=&quot;translate(0 ${d.y})&quot;&gt; \
+                    &lt;text y=&quot;20&quot;&gt;${d.label}&lt;/text&gt; \
+                    &lt;rect x=&quot;30&quot;   \
+                         width=&quot;${d.width}&quot; \
+                         height=&quot;20&quot;    \
+                         style=&quot;fill:${d.color};    \
+                                stroke-width:3; \
+                                stroke:rgb(0,0,0)&quot; /&gt;   \
+                    &lt;/g&gt;&apos;
 
-$(&apos;button#onebar&apos;).click(function(){
-    var svg = &quot;&lt;svg&gt;&lt;rect height=&apos;50&apos; width=&apos;10&apos;&gt;&lt;/rect&gt;&lt;/svg&gt;&quot;
-    $(&apos;.myviz&apos;).html(svg)
-})
+    // compile the string to get a template function
+    var template = _.template(tplString)
 
-$(&apos;button#twobars&apos;).click(function(){
-    var svg = &quot;&lt;svg&gt;&lt;rect height=&apos;50&apos; width=&apos;10&apos;/&gt;&lt;rect height=&apos;50&apos; width=&apos;10&apos; x=&apos;20&apos;/&gt;&lt;/svg&gt;&quot;
-    $(&apos;.myviz&apos;).html(svg)
-})
+    function computeX(d, i) {
+        return 0
+    }
 
-// Event handler for the &quot;Five Bars&quot; button to display five bars
-$(&apos;button#fivebars&apos;).click(function(){
-    var svg = &quot;&lt;svg&gt;&lt;rect height=&apos;50&apos; width=&apos;10&apos;/&gt;&lt;rect height=&apos;50&apos; width=&apos;10&apos; x=&apos;20&apos;/&gt;&lt;rect height=&apos;50&apos; width=&apos;10&apos; x=&apos;40&apos;/&gt;&lt;rect height=&apos;50&apos; width=&apos;10&apos; x=&apos;60&apos;/&gt;&lt;rect height=&apos;50&apos; width=&apos;10&apos; x=&apos;80&apos;/&gt;&lt;/svg&gt;&quot;
-    $(&apos;.myviz&apos;).html(svg)
-})
+    function computeWidth(d, i) {        
+        return i * 20 + 20
+    }
 
-// Event handler for the &quot;Five Green Bars&quot; button to display five green bars
-$(&apos;button#fivegreenbars&apos;).click(function(){
-    var svg = &quot;&lt;svg&gt;&lt;rect height=&apos;50&apos; width=&apos;10&apos; style=&apos;fill:green&apos; /&gt;&lt;rect height=&apos;50&apos; width=&apos;10&apos; x=&apos;20&apos; style=&apos;fill:green&apos; /&gt;&lt;rect height=&apos;50&apos; width=&apos;10&apos; x=&apos;40&apos; style=&apos;fill:green&apos; /&gt;&lt;rect height=&apos;50&apos; width=&apos;10&apos; x=&apos;60&apos; style=&apos;fill:green&apos; /&gt;&lt;rect height=&apos;50&apos; width=&apos;10&apos; x=&apos;80&apos; style=&apos;fill:green&apos; /&gt;&lt;/svg&gt;&quot;
-    $(&apos;.myviz&apos;).html(svg)
-})</code></pre><script>var code ="console.log('adding click event handlers')\n\n$('button#hello').click(function(){\n    console.log('hello button is clicked')\n    $('.myviz').html(\"hello\")\n})\n\n$('button#hi').click(function(){\n    console.log('hello button is clicked')\n    $('.myviz').html(\"hi\")\n})\n\n$('button#taller').click(function(){\n    console.log('taller button is clicked')\n    $('.myviz').height(500)\n})\n\n$('button#shorter').click(function(){\n    console.log('shorter button is clicked')\n    $('.myviz').height(100)\n})\n\n// FIXME: Event handler for the \"Red\" button to set the background color of the viz block to red\n$('button#red').click(function(){\n    console.log('red button is clicked')\n    $('.myviz').css('background-color','red')\n})\n\n// FIXME: Event handler for the \"Green\" button to set the background color of the viz block to green\n$('button#green').click(function(){\n    console.log('green button is clicked')\n    $('.myviz').css('background-color','green')\n})\n\n$('button#onebar').click(function(){\n    var svg = \"<svg><rect height='50' width='10'></rect></svg>\"\n    $('.myviz').html(svg)\n})\n\n$('button#twobars').click(function(){\n    var svg = \"<svg><rect height='50' width='10'/><rect height='50' width='10' x='20'/></svg>\"\n    $('.myviz').html(svg)\n})\n\n// Event handler for the \"Five Bars\" button to display five bars\n$('button#fivebars').click(function(){\n    var svg = \"<svg><rect height='50' width='10'/><rect height='50' width='10' x='20'/><rect height='50' width='10' x='40'/><rect height='50' width='10' x='60'/><rect height='50' width='10' x='80'/></svg>\"\n    $('.myviz').html(svg)\n})\n\n// Event handler for the \"Five Green Bars\" button to display five green bars\n$('button#fivegreenbars').click(function(){\n    var svg = \"<svg><rect height='50' width='10' style='fill:green' /><rect height='50' width='10' x='20' style='fill:green' /><rect height='50' width='10' x='40' style='fill:green' /><rect height='50' width='10' x='60' style='fill:green' /><rect height='50' width='10' x='80' style='fill:green' /></svg>\"\n    $('.myviz').html(svg)\n})"</script></p>
+    function computeY(d, i) {
+        return i * 20
+    }
+
+    function computeColor(d, i) {
+        return &apos;red&apos;
+    }
+
+    function computeLabel(d, i) {
+        return &apos;f&apos; + i
+    }
+
+    // TODO: modify the logic here based on your UI
+    // take the first 20 items to visualize    
+    items = _.take(items, 20)
+
+    var viz = _.map(items, function(d, i){                
+                return {
+                    x: computeX(d, i),
+                    y: computeY(d, i),
+                    width: computeWidth(d, i),
+                    color: computeColor(d, i),
+                    label: computeLabel(d, i)
+                }
+             })
+    console.log(&apos;viz&apos;, viz)
+
+    var result = _.map(viz, function(d){
+             // invoke the compiled template function on each viz data
+             return template({d: d})
+         })
+    console.log(&apos;result&apos;, result)
+
+    $(&apos;.myviz&apos;).html(&apos;&lt;svg width=&quot;100%&quot; height=&quot;100%&quot;&gt;&apos; + result + &apos;&lt;/svg&gt;&apos;)
+}
+
+$(&apos;button#viz&apos;).click(function(){    
+    var arg1 = &apos;TODO&apos;
+    var arg2 = &apos;TODO&apos;
+    var arg3 = &apos;TODO&apos;    
+    viz(arg1, arg2, arg3)
+})</code></pre><script>var code ="items = 'not loaded yet'\n\nconsole.log('lodash version:', _.VERSION)\n\n$.get('http://bigdatahci2015.github.io/data/yelp/yelp_academic_dataset_business.5000.json.lines.txt')\n    .success(function(data){        \n        var lines = data.trim().split('\\n')\n\n        // convert text lines to json arrays and save them in `items`\n        items = _.map(lines, JSON.parse)\n\n        console.log('number of items loaded:', items.length)\n\n        console.log('first item', items[0])\n     })\n     .error(function(e){\n         console.error(e)\n     })\n\nfunction viz(arg1, arg2, arg3){    \n\n    // define a template string\n    var tplString = '<g transform=\"translate(0 ${d.y})\"> \\\n                    <text y=\"20\">${d.label}</text> \\\n                    <rect x=\"30\"   \\\n                         width=\"${d.width}\" \\\n                         height=\"20\"    \\\n                         style=\"fill:${d.color};    \\\n                                stroke-width:3; \\\n                                stroke:rgb(0,0,0)\" />   \\\n                    </g>'\n\n    // compile the string to get a template function\n    var template = _.template(tplString)\n\n    function computeX(d, i) {\n        return 0\n    }\n\n    function computeWidth(d, i) {        \n        return i * 20 + 20\n    }\n\n    function computeY(d, i) {\n        return i * 20\n    }\n\n    function computeColor(d, i) {\n        return 'red'\n    }\n\n    function computeLabel(d, i) {\n        return 'f' + i\n    }\n\n    // TODO: modify the logic here based on your UI\n    // take the first 20 items to visualize    \n    items = _.take(items, 20)\n\n    var viz = _.map(items, function(d, i){                \n                return {\n                    x: computeX(d, i),\n                    y: computeY(d, i),\n                    width: computeWidth(d, i),\n                    color: computeColor(d, i),\n                    label: computeLabel(d, i)\n                }\n             })\n    console.log('viz', viz)\n\n    var result = _.map(viz, function(d){\n             // invoke the compiled template function on each viz data\n             return template({d: d})\n         })\n    console.log('result', result)\n\n    $('.myviz').html('<svg width=\"100%\" height=\"100%\">' + result + '</svg>')\n}\n\n$('button#viz').click(function(){    \n    var arg1 = 'TODO'\n    var arg2 = 'TODO'\n    var arg3 = 'TODO'    \n    viz(arg1, arg2, arg3)\n})"</script></p>
+<h1 id="authors">Authors</h1>
+<p>This UI is developed by</p>
+<ul>
+<li><a href="link%20to%20github%20account">Full name</a></li>
+<li><a href="link%20to%20github%20account">Full name</a></li>
+<li><a href="link%20to%20github%20account">Full name</a></li>
+<li><a href="link%20to%20github%20account">Full name</a></li>
+<li><a href="link%20to%20github%20account">Full name</a></li>
+</ul>
 
                     
                     </section>
@@ -542,10 +586,10 @@ $(&apos;button#fivegreenbars&apos;).click(function(){
         </div>
 
         
-        <a href="../../learning/week7/netapp.html" class="navigation navigation-prev " aria-label="Previous page: NetApp"><i class="fa fa-angle-left"></i></a>
+        <a href="../../learning/week8/index.html" class="navigation navigation-prev " aria-label="Previous page: Week 8"><i class="fa fa-angle-left"></i></a>
         
         
-        <a href="../../learning/week7/jquery-form.html" class="navigation navigation-next " aria-label="Next page: Form"><i class="fa fa-angle-right"></i></a>
+        <a href="../../learning/week8/q1.html" class="navigation navigation-next " aria-label="Next page: Q1"><i class="fa fa-angle-right"></i></a>
         
     </div>
 </div>
