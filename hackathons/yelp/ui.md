@@ -1,6 +1,6 @@
 # UI
 
-## What businesses have category (W) in city (X) with at least (Y) reviews and at least a rating of (Z)?
+## What businesses have category (V) in city (W) with at least (X) reviews and at least a rating of (Y) and are open on Day (Z)?
 
 <div style="border:1px grey solid; padding:5px;">
     <div><h5>Category</h5>
@@ -37,7 +37,7 @@ $.get('http://bigdatahci2015.github.io/data/yelp/yelp_academic_dataset_business.
     .success(function(data){        
         var lines = data.trim().split('\n')
 
-        // convert text lines to json arrays and save them in `items`
+        // Convert text lines to json arrays and save them in `items`
         items = _.map(lines, JSON.parse)
 
         console.log('number of items loaded:', items.length)
@@ -53,7 +53,7 @@ $.get('http://bigdatahci2015.github.io/data/yelp/yelp_academic_dataset_business.
 
 function viz(arg0, arg1, arg2, arg3, arg4, arg5) {    
 
-    // define a template string
+    // Define a template string
     var tplString = '<g transform="translate(0 ${d.y})"> \
                     <text y="15">${d.label}</text> \
                     <rect x="310"   \
@@ -66,7 +66,7 @@ function viz(arg0, arg1, arg2, arg3, arg4, arg5) {
                     <text x=625 y="15">${d.label3}</text> \
                     </g>'
 
-    // compile the string to get a template function
+    // Compile the string to get a template function
     var template = _.template(tplString)
 
     function computeX(d, i) {
@@ -94,12 +94,10 @@ function viz(arg0, arg1, arg2, arg3, arg4, arg5) {
     }
 
     function computeLabel2(d, i) {
-        // star solid [&#9733]
-        // fraction 1/2 [&#189]
         var string = ""
         var num_stars = _.floor(d.stars)
-        for (i = 0; i < num_stars; i++) { string += '&#9733' }
-        if ((d.stars - num_stars) != 0) { string += '&#189' }
+        for (i = 0; i < num_stars; i++) { string += '&#9733' }   // star solid [&#9733]
+        if ((d.stars - num_stars) != 0) { string += '&#189' }    // fraction 1/2 [&#189]
         return ' Rating: ' + string
     }
 
@@ -133,7 +131,6 @@ function viz(arg0, arg1, arg2, arg3, arg4, arg5) {
             if ( _.isUndefined(d.hours.Saturday) ) { open = ''; close = 'CLOSED' }
             else { open = d.hours.Saturday.open; close = d.hours.Saturday.close }
         }
-
         return day + ': ' + open + '-' + close
     }
 
@@ -176,21 +173,15 @@ function viz(arg0, arg1, arg2, arg3, arg4, arg5) {
 
     // Take the first 20 items to visualize    
     var vizItems = _.take(vizData, 20)
-    console.log(vizItems)
 
     // Of the businesses with the highest rating (stars) highlight
     // the business with the greatest number of reviews
 
     var max_rating = _.max(_.pluck(vizItems, 'stars'))
-    // console.log('max_rating', max_rating)
-
     var filter_max = _.filter(vizItems, function(d) {
         return d.stars == max_rating
     })
-    // console.log('filter_max', filter_max)
-   
     var max_reviews = _.max(_.pluck(filter_max, 'review_count'))
-    // console.log('max_reviews', max_reviews)
 
     var viz = _.map(vizItems, function(d, i) {                
         return {
@@ -205,8 +196,7 @@ function viz(arg0, arg1, arg2, arg3, arg4, arg5) {
     })
 
     var result = _.map(viz, function(d){
-        // invoke the compiled template function on each viz data
-        return template({d: d})
+        return template({d: d}) // invoke the compiled template function on each viz data
     })
 
     $('.myviz').html('<svg width="100%" height="100%">' + result + '</svg>')
