@@ -68,7 +68,7 @@
     <body>
         <!-- body:start -->
         
-    <div class="book" data-level="1.2.2" data-basepath="../.." data-revision="Thu Oct 15 2015 21:10:33 GMT-0600 (MDT)">
+    <div class="book" data-level="1.2.2" data-basepath="../.." data-revision="Sat Oct 17 2015 19:36:34 GMT-0600 (MDT)">
     
 
 <div class="book-summary">
@@ -459,10 +459,285 @@
                 
                     <section class="normal" id="section-">
                     
-                        <h1 id="individual-1-of-3">Individual 1 of 3</h1>
-<h2 id="-question-class">(Question class)</h2>
-<p>(fill in the rest to provide an interactive visualization interface for
-    this question class)</p>
+                        <h1 id="ui">UI</h1>
+<h1 id="individual-1-of-3">Individual 1 of 3</h1>
+<h2 id="what-businesses-in-city-w-are-open-on-day-x-at-time-y-with-a-rating-of-z">What businesses in city (W) are open on day (X) at time (Y) with a rating of (Z)?</h2>
+<div style="border:1px grey solid; padding:5px;">
+    <div><h5>Time of Day (e.g.08:30, 13:00, 22:00)</h5>
+        <input id="arg0" type="text" value="13:00">
+    </div>
+    <div><h5>City</h5>
+        <input id="arg1" type="text" value="Phoenix">
+    </div>
+    <div><h5>Minimum Number of Reviews</h5>
+        <input id="arg2" type="text" value="200">
+    </div>
+    <div><h5>Minimum Rating (0.0 - 5.0)</h5>
+        <input id="arg3" type="text" value="4.0">
+    </div>    
+    <div><h5>Sort Option (None, Ascending, Descending))</h5>
+        <input id="arg4" type="text" value="None">
+    </div>    
+    <div><h5>Day of Week (e.g., Friday)</h5>
+        <input id="arg5" type="text" value="Friday">
+    </div>    
+    <div style="margin:20px;">
+        <button id="viz">Vizualize</button>
+    </div>
+</div>
+
+<div class="myviz" style="width:100%; height:500px; border: 1px black solid; padding: 5px;">
+Data is not loaded yet
+</div>
+
+<p><pre><code>items = &apos;not loaded yet&apos;
+
+$.get(&apos;http://bigdatahci2015.github.io/data/yelp/yelp_academic_dataset_business.5000.json.lines.txt&apos;)
+    .success(function(data){        
+        var lines = data.trim().split(&apos;\n&apos;)
+
+        // Convert text lines to json arrays and save them in `items`
+        items = _.map(lines, JSON.parse)
+
+        console.log(&apos;number of items loaded:&apos;, items.length)
+
+        // Show in the myviz that the data is loaded
+        $(&apos;.myviz&apos;).html(&apos;number of records load:&apos; + data.length)
+
+        console.log(&apos;first item&apos;, items[0])
+     })
+     .error(function(e){
+         console.error(e)
+     })
+
+function viz(arg0, arg1, arg2, arg3, arg4, arg5) {    
+
+    // Define a template string
+    var tplString = &apos;&lt;g transform=&quot;translate(0 ${d.y})&quot;&gt; \
+                    &lt;text y=&quot;15&quot;&gt;${d.label}&lt;/text&gt; \
+                    &lt;rect x=&quot;310&quot;   \
+                         width=&quot;${d.width}&quot; \
+                         height=&quot;20&quot;    \
+                         style=&quot;fill:${d.color};    \
+                                stroke-width:3; \
+                                stroke:rgb(0,0,0)&quot; /&gt;   \
+                    &lt;text x=315 y=&quot;15&quot;&gt;${d.label2}&lt;/text&gt; \
+                    &lt;text x=625 y=&quot;15&quot;&gt;${d.label3}&lt;/text&gt; \
+                    &lt;/g&gt;&apos;
+
+    // Compile the string to get a template function
+    var template = _.template(tplString)
+
+    function computeX(d, i) {
+        return 0
+    }
+
+    function computeWidth(d, i) {        
+        return d.stars * 60
+    }
+
+    function computeY(d, i) {
+        return i * 20
+    }
+
+    function computeColor(d, i, max_reviews) {
+        if (d.review_count == max_reviews) {
+            return &apos;yellow&apos;
+        } else {
+            return &apos;red&apos;
+        }
+    }
+
+    function computeLabel(d, i) {
+        return d.name + &apos; (&apos; + d.review_count + &apos;)&apos;
+    }
+
+    function computeLabel2(d, i) {
+        var string = &quot;&quot;
+        var num_stars = _.floor(d.stars)
+        for (i = 0; i &lt; num_stars; i++) { string += &apos;&amp;#9733&apos; }   // star solid [&amp;#9733]
+        if ((d.stars - num_stars) != 0) { string += &apos;&amp;#189&apos; }    // fraction 1/2 [&amp;#189]
+        return &apos; Rating: &apos; + string
+    }
+
+    function computeLabel3(d, i) {
+        var day, open, close
+        if (arg5 == &apos;Sunday&apos;) { day = &apos;Sun&apos; 
+            if ( _.isUndefined(d.hours.Sunday) ) { open = &apos;&apos;; close = &apos;CLOSED&apos; }
+            else { open = d.hours.Sunday.open; close = d.hours.Sunday.close }
+        }
+        else if (arg5 == &apos;Monday&apos;) { day = &apos;Mon&apos; 
+            if ( _.isUndefined(d.hours.Monday) ) { open = &apos;&apos;; close = &apos;CLOSED&apos; }
+            else { open = d.hours.Monday.open; close = d.hours.Monday.close }
+        }
+        else if (arg5 == &apos;Tuesday&apos;) { day = &apos;Tue&apos; 
+            if ( _.isUndefined(d.hours.Tuesday) ) { open = &apos;&apos;; close = &apos;CLOSED&apos; }
+            else { open = d.hours.Tuesday.open; close = d.hours.Tuesday.close }
+        }
+        else if (arg5 == &apos;Wednesday&apos;) { day = &apos;Wed&apos; 
+            if ( _.isUndefined(d.hours.Wednesday) ) { open = &apos;&apos;; close = &apos;CLOSED&apos; }
+            else { open = d.hours.Wednesday.open; close = d.hours.Wednesday.close }
+        }
+        else if (arg5 == &apos;Thursday&apos;) { day = &apos;Thu&apos; 
+            if ( _.isUndefined(d.hours.Thursday) ) { open = &apos;&apos;; close = &apos;CLOSED&apos; }
+            else { open = d.hours.Thursday.open; close = d.hours.Thursday.close }
+        }
+        else if (arg5 == &apos;Friday&apos;) { day = &apos;Fri&apos; 
+            if ( _.isUndefined(d.hours.Friday) ) { open = &apos;&apos;; close = &apos;CLOSED&apos; }
+            else { open = d.hours.Friday.open; close = d.hours.Friday.close }
+        }
+        else if (arg5 == &apos;Saturday&apos;) { day = &apos;Sat&apos; 
+            if ( _.isUndefined(d.hours.Saturday) ) { open = &apos;&apos;; close = &apos;CLOSED&apos; }
+            else { open = d.hours.Saturday.open; close = d.hours.Saturday.close }
+        }
+        return day + &apos;: &apos; + open + &apos;-&apos; + close
+    }
+
+    // UI processing logic
+
+    console.log(arg0); console.log(arg1); console.log(arg2); 
+    console.log(arg3); console.log(arg4); console.log(arg5);
+
+    var filter_city = _.filter(items, function(d) {
+        return (d.city == arg1)
+    })
+    var filter_reviews = _.filter(filter_city, function(d) {
+        return (d.review_count &gt;= parseInt(arg2))
+    })
+    var filter_stars = _.filter(filter_reviews, function(d) {
+        return (d.stars &gt;= parseFloat(arg3))
+    })
+
+    // Have filtered &apos;items&apos; based on city, #reviews and rating (stars)
+    // Find all objects open on user-specified day of week (arg5) and time (arg0)        
+
+    var filter_days = _.filter(filter_stars, function(d) {
+        if (arg5 == &apos;Sunday&apos;) {
+            if ( _.isUndefined(d.hours.Sunday) ) { return 0 }
+            else { return 1 }
+        }
+        else if (arg5 == &apos;Monday&apos;) {
+            if ( _.isUndefined(d.hours.Monday) ) { return 0 }
+            else { return 1 }
+        }
+        else if (arg5 == &apos;Tuesday&apos;) {
+            if ( _.isUndefined(d.hours.Tuesday) ) { return 0 }
+            else { return 1 }
+        }
+        else if (arg5 == &apos;Wednesday&apos;) {
+            if ( _.isUndefined(d.hours.Wednesday) ) { return 0 }
+            else { return 1 }
+        }
+        else if (arg5 == &apos;Thursday&apos;) {
+            if ( _.isUndefined(d.hours.Thursday) ) { return 0 }
+            else { return 1 }
+        }
+        else if (arg5 == &apos;Friday&apos;) {
+            if ( _.isUndefined(d.hours.Friday) ) { return 0 }
+            else { return 1 }
+        }
+        else if (arg5 == &apos;Saturday&apos;) {
+            if ( _.isUndefined(d.hours.Saturday) ) { return 0 }
+            else { return 1 }
+        }
+    })
+
+    var filter_time = _.filter(filter_days, function(d) {
+        var userHour = parseInt(_.first(arg0.split(&apos;:&apos;))) 
+        if (userHour == &apos;00&apos;) { userHour = &apos;24&apos; }
+        var userMin = parseInt(_.last(arg0.split(&apos;:&apos;)))
+        var openTime, closeTime
+        var hourOpen, minOpen, hourClose, minClose
+
+        if (arg5 == &apos;Sunday&apos;) { openTime = d.hours.Sunday.open; closeTime = d.hours.Sunday.close }
+        else if (arg5 == &apos;Monday&apos;) { openTime = d.hours.Monday.open; closeTime = d.hours.Monday.close }
+        else if (arg5 == &apos;Tuesday&apos;) { openTime = d.hours.Tuesday.open; closeTime = d.hours.Tuesday.close }
+        else if (arg5 == &apos;Wednesday&apos;) { openTime = d.hours.Wednesday.open; closeTime = d.hours.Wednesday.close }
+        else if (arg5 == &apos;Thursday&apos;) { openTime = d.hours.Thursday.open; closeTime = d.hours.Thursday.close }
+        else if (arg5 == &apos;Friday&apos;) { openTime = d.hours.Friday.open; closeTime = d.hours.Friday.close }
+        else if (arg5 == &apos;Saturday&apos;) { openTime = d.hours.Saturday.open; closeTime = d.hours.Saturday.close }
+
+        openTime = d.hours.Friday.open; closeTime = d.hours.Friday.close;
+        hourOpen = parseInt(_.first(openTime.split(&apos;:&apos;)))
+        minOpen  = parseInt(_.last(openTime.split(&apos;:&apos;)))
+        hourClose = parseInt(_.first(closeTime.split(&apos;:&apos;))); if (hourClose == 0) { hourClose = 24 }
+        minClose  = parseInt(_.last(closeTime.split(&apos;:&apos;)))
+        // console.log(hourOpen + &apos;:&apos; + minOpen + &apos;|&apos; + userHour + &apos;:&apos; + userMin + &apos;|&apos; + hourClose + &apos;:&apos; + minClose)
+        if (hourOpen &lt; userHour &amp;&amp; userHour &lt; hourClose) 
+            { return 1 }
+        else if (hourOpen == userHour &amp;&amp; minOpen &lt;= userMin &amp;&amp; userHour &lt; hourClose) 
+            { return 1 }
+        else if (hourOpen == userHour &amp;&amp; minOpen &lt;= userMin &amp;&amp; userHour == hourClose 
+                 &amp;&amp; userMin &lt;= minClose) 
+            { return 1 }
+        else { return 0 }
+
+    })
+
+    var vizData = filter_time
+
+    // Determine if need to sort
+
+    var sort = 0
+    if (arg4 == &quot;Ascending&quot; || arg4 == &quot;ascending&quot;) { sort = 1 }
+    if (arg4 == &quot;Descending&quot; || arg4 == &quot;descending&quot;) { sort = -1 }
+
+    if (sort) {
+        var vizData = _.sortBy(filter_time, function(d) {
+            return sort * d.stars
+        })
+    }
+
+    // Take the first 20 items to visualize    
+    var vizItems = _.take(vizData, 20)
+
+    // Of the businesses with the highest rating (stars) highlight
+    // the business with the greatest number of reviews
+
+    var max_rating = _.max(_.pluck(vizItems, &apos;stars&apos;))
+    var filter_max = _.filter(vizItems, function(d) {
+        return d.stars == max_rating
+    })
+    var max_reviews = _.max(_.pluck(filter_max, &apos;review_count&apos;))
+
+    var viz = _.map(vizItems, function(d, i) {                
+        return {
+            x: computeX(d, i),
+            y: computeY(d, i),
+            width: computeWidth(d, i),
+            color: computeColor(d, i, max_reviews),
+            label: computeLabel(d, i),
+            label2: computeLabel2(d, i),
+            label3: computeLabel3(d, i)
+        }
+    })
+
+    var result = _.map(viz, function(d){
+        return template({d: d}) // invoke the compiled template function on each viz data
+    })
+
+    $(&apos;.myviz&apos;).html(&apos;&lt;svg width=&quot;100%&quot; height=&quot;100%&quot;&gt;&apos; + result + &apos;&lt;/svg&gt;&apos;)
+}
+
+$(&apos;button#viz&apos;).click(function(){    
+    var arg0 = $(&apos;input#arg0&apos;).val()
+    var arg1 = $(&apos;input#arg1&apos;).val()
+    var arg2 = $(&apos;input#arg2&apos;).val()
+    var arg3 = $(&apos;input#arg3&apos;).val()
+    var arg4 = $(&apos;input#arg4&apos;).val()
+    var arg5 = $(&apos;input#arg5&apos;).val()
+    viz(arg0, arg1, arg2, arg3, arg4, arg5)
+})</code></pre><script>var code ="items = 'not loaded yet'\n\n$.get('http://bigdatahci2015.github.io/data/yelp/yelp_academic_dataset_business.5000.json.lines.txt')\n    .success(function(data){        \n        var lines = data.trim().split('\\n')\n\n        // Convert text lines to json arrays and save them in `items`\n        items = _.map(lines, JSON.parse)\n\n        console.log('number of items loaded:', items.length)\n\n        // Show in the myviz that the data is loaded\n        $('.myviz').html('number of records load:' + data.length)\n\n        console.log('first item', items[0])\n     })\n     .error(function(e){\n         console.error(e)\n     })\n\nfunction viz(arg0, arg1, arg2, arg3, arg4, arg5) {    \n\n    // Define a template string\n    var tplString = '<g transform=\"translate(0 ${d.y})\"> \\\n                    <text y=\"15\">${d.label}</text> \\\n                    <rect x=\"310\"   \\\n                         width=\"${d.width}\" \\\n                         height=\"20\"    \\\n                         style=\"fill:${d.color};    \\\n                                stroke-width:3; \\\n                                stroke:rgb(0,0,0)\" />   \\\n                    <text x=315 y=\"15\">${d.label2}</text> \\\n                    <text x=625 y=\"15\">${d.label3}</text> \\\n                    </g>'\n\n    // Compile the string to get a template function\n    var template = _.template(tplString)\n\n    function computeX(d, i) {\n        return 0\n    }\n\n    function computeWidth(d, i) {        \n        return d.stars * 60\n    }\n\n    function computeY(d, i) {\n        return i * 20\n    }\n\n    function computeColor(d, i, max_reviews) {\n        if (d.review_count == max_reviews) {\n            return 'yellow'\n        } else {\n            return 'red'\n        }\n    }\n\n    function computeLabel(d, i) {\n        return d.name + ' (' + d.review_count + ')'\n    }\n\n    function computeLabel2(d, i) {\n        var string = \"\"\n        var num_stars = _.floor(d.stars)\n        for (i = 0; i < num_stars; i++) { string += '&#9733' }   // star solid [&#9733]\n        if ((d.stars - num_stars) != 0) { string += '&#189' }    // fraction 1/2 [&#189]\n        return ' Rating: ' + string\n    }\n\n    function computeLabel3(d, i) {\n        var day, open, close\n        if (arg5 == 'Sunday') { day = 'Sun' \n            if ( _.isUndefined(d.hours.Sunday) ) { open = ''; close = 'CLOSED' }\n            else { open = d.hours.Sunday.open; close = d.hours.Sunday.close }\n        }\n        else if (arg5 == 'Monday') { day = 'Mon' \n            if ( _.isUndefined(d.hours.Monday) ) { open = ''; close = 'CLOSED' }\n            else { open = d.hours.Monday.open; close = d.hours.Monday.close }\n        }\n        else if (arg5 == 'Tuesday') { day = 'Tue' \n            if ( _.isUndefined(d.hours.Tuesday) ) { open = ''; close = 'CLOSED' }\n            else { open = d.hours.Tuesday.open; close = d.hours.Tuesday.close }\n        }\n        else if (arg5 == 'Wednesday') { day = 'Wed' \n            if ( _.isUndefined(d.hours.Wednesday) ) { open = ''; close = 'CLOSED' }\n            else { open = d.hours.Wednesday.open; close = d.hours.Wednesday.close }\n        }\n        else if (arg5 == 'Thursday') { day = 'Thu' \n            if ( _.isUndefined(d.hours.Thursday) ) { open = ''; close = 'CLOSED' }\n            else { open = d.hours.Thursday.open; close = d.hours.Thursday.close }\n        }\n        else if (arg5 == 'Friday') { day = 'Fri' \n            if ( _.isUndefined(d.hours.Friday) ) { open = ''; close = 'CLOSED' }\n            else { open = d.hours.Friday.open; close = d.hours.Friday.close }\n        }\n        else if (arg5 == 'Saturday') { day = 'Sat' \n            if ( _.isUndefined(d.hours.Saturday) ) { open = ''; close = 'CLOSED' }\n            else { open = d.hours.Saturday.open; close = d.hours.Saturday.close }\n        }\n        return day + ': ' + open + '-' + close\n    }\n\n    // UI processing logic\n\n    console.log(arg0); console.log(arg1); console.log(arg2); \n    console.log(arg3); console.log(arg4); console.log(arg5);\n\n    var filter_city = _.filter(items, function(d) {\n        return (d.city == arg1)\n    })\n    var filter_reviews = _.filter(filter_city, function(d) {\n        return (d.review_count >= parseInt(arg2))\n    })\n    var filter_stars = _.filter(filter_reviews, function(d) {\n        return (d.stars >= parseFloat(arg3))\n    })\n\n    // Have filtered 'items' based on city, #reviews and rating (stars)\n    // Find all objects open on user-specified day of week (arg5) and time (arg0)        \n\n    var filter_days = _.filter(filter_stars, function(d) {\n        if (arg5 == 'Sunday') {\n            if ( _.isUndefined(d.hours.Sunday) ) { return 0 }\n            else { return 1 }\n        }\n        else if (arg5 == 'Monday') {\n            if ( _.isUndefined(d.hours.Monday) ) { return 0 }\n            else { return 1 }\n        }\n        else if (arg5 == 'Tuesday') {\n            if ( _.isUndefined(d.hours.Tuesday) ) { return 0 }\n            else { return 1 }\n        }\n        else if (arg5 == 'Wednesday') {\n            if ( _.isUndefined(d.hours.Wednesday) ) { return 0 }\n            else { return 1 }\n        }\n        else if (arg5 == 'Thursday') {\n            if ( _.isUndefined(d.hours.Thursday) ) { return 0 }\n            else { return 1 }\n        }\n        else if (arg5 == 'Friday') {\n            if ( _.isUndefined(d.hours.Friday) ) { return 0 }\n            else { return 1 }\n        }\n        else if (arg5 == 'Saturday') {\n            if ( _.isUndefined(d.hours.Saturday) ) { return 0 }\n            else { return 1 }\n        }\n    })\n\n    var filter_time = _.filter(filter_days, function(d) {\n        var userHour = parseInt(_.first(arg0.split(':'))) \n        if (userHour == '00') { userHour = '24' }\n        var userMin = parseInt(_.last(arg0.split(':')))\n        var openTime, closeTime\n        var hourOpen, minOpen, hourClose, minClose\n\n        if (arg5 == 'Sunday') { openTime = d.hours.Sunday.open; closeTime = d.hours.Sunday.close }\n        else if (arg5 == 'Monday') { openTime = d.hours.Monday.open; closeTime = d.hours.Monday.close }\n        else if (arg5 == 'Tuesday') { openTime = d.hours.Tuesday.open; closeTime = d.hours.Tuesday.close }\n        else if (arg5 == 'Wednesday') { openTime = d.hours.Wednesday.open; closeTime = d.hours.Wednesday.close }\n        else if (arg5 == 'Thursday') { openTime = d.hours.Thursday.open; closeTime = d.hours.Thursday.close }\n        else if (arg5 == 'Friday') { openTime = d.hours.Friday.open; closeTime = d.hours.Friday.close }\n        else if (arg5 == 'Saturday') { openTime = d.hours.Saturday.open; closeTime = d.hours.Saturday.close }\n\n        openTime = d.hours.Friday.open; closeTime = d.hours.Friday.close;\n        hourOpen = parseInt(_.first(openTime.split(':')))\n        minOpen  = parseInt(_.last(openTime.split(':')))\n        hourClose = parseInt(_.first(closeTime.split(':'))); if (hourClose == 0) { hourClose = 24 }\n        minClose  = parseInt(_.last(closeTime.split(':')))\n        // console.log(hourOpen + ':' + minOpen + '|' + userHour + ':' + userMin + '|' + hourClose + ':' + minClose)\n        if (hourOpen < userHour && userHour < hourClose) \n            { return 1 }\n        else if (hourOpen == userHour && minOpen <= userMin && userHour < hourClose) \n            { return 1 }\n        else if (hourOpen == userHour && minOpen <= userMin && userHour == hourClose \n                 && userMin <= minClose) \n            { return 1 }\n        else { return 0 }\n\n    })\n\n    var vizData = filter_time\n\n    // Determine if need to sort\n\n    var sort = 0\n    if (arg4 == \"Ascending\" || arg4 == \"ascending\") { sort = 1 }\n    if (arg4 == \"Descending\" || arg4 == \"descending\") { sort = -1 }\n\n    if (sort) {\n        var vizData = _.sortBy(filter_time, function(d) {\n            return sort * d.stars\n        })\n    }\n\n    // Take the first 20 items to visualize    \n    var vizItems = _.take(vizData, 20)\n\n    // Of the businesses with the highest rating (stars) highlight\n    // the business with the greatest number of reviews\n\n    var max_rating = _.max(_.pluck(vizItems, 'stars'))\n    var filter_max = _.filter(vizItems, function(d) {\n        return d.stars == max_rating\n    })\n    var max_reviews = _.max(_.pluck(filter_max, 'review_count'))\n\n    var viz = _.map(vizItems, function(d, i) {                \n        return {\n            x: computeX(d, i),\n            y: computeY(d, i),\n            width: computeWidth(d, i),\n            color: computeColor(d, i, max_reviews),\n            label: computeLabel(d, i),\n            label2: computeLabel2(d, i),\n            label3: computeLabel3(d, i)\n        }\n    })\n\n    var result = _.map(viz, function(d){\n        return template({d: d}) // invoke the compiled template function on each viz data\n    })\n\n    $('.myviz').html('<svg width=\"100%\" height=\"100%\">' + result + '</svg>')\n}\n\n$('button#viz').click(function(){    \n    var arg0 = $('input#arg0').val()\n    var arg1 = $('input#arg1').val()\n    var arg2 = $('input#arg2').val()\n    var arg3 = $('input#arg3').val()\n    var arg4 = $('input#arg4').val()\n    var arg5 = $('input#arg5').val()\n    viz(arg0, arg1, arg2, arg3, arg4, arg5)\n})"</script></p>
+<h1 id="authors">Authors</h1>
+<p>This UI is developed by</p>
+<ul>
+<li><a href="http://github.com/willzfarmer" target="_blank">William Farmer</a></li>
+<li><a href="http://github.com/kevinkgifford" target="_blank">Kevin Gifford</a></li>
+<li><a href="http://github.com/pail4944" target="_blank">Parker Illig</a></li>
+<li><a href="http://github.com/DomoYeti" target="_blank">Robert Kendl</a></li>
+<li><a href="http://github.com/drewdinger" target="_blank">Andrew Krodinger</a></li>
+<li><a href="http://github.com/jraesly" target="_blank">John Raesly</a></li>
+</ul>
 
                     
                     </section>

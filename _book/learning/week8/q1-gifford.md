@@ -1,12 +1,10 @@
 # UI
 
-# Individual 1 of 3
-
-## What businesses in city (W) are open on day (X) at time (Y) with a rating of (Z)?
+## What businesses have category (V) in city (W) with at least (X) reviews and at least a rating of (Y) and are open on Day (Z)?
 
 <div style="border:1px grey solid; padding:5px;">
-    <div><h5>Time of Day (e.g.08:30, 13:00, 22:00)</h5>
-        <input id="arg0" type="text" value="13:00"/>
+    <div><h5>Category</h5>
+        <input id="arg0" type="text" value="Restaurants"/>
     </div>
     <div><h5>City</h5>
         <input id="arg1" type="text" value="Phoenix"/>
@@ -20,8 +18,8 @@
     <div><h5>Sort Option (None, Ascending, Descending))</h5>
         <input id="arg4" type="text" value="None"/>
     </div>    
-    <div><h5>Day of Week (e.g., Friday)</h5>
-        <input id="arg5" type="text" value="Friday"/>
+    <div><h5>Day of Week (e.g., Wednesday)</h5>
+        <input id="arg5" type="text" value="Wednesday"/>
     </div>    
     <div style="margin:20px;">
         <button id="viz">Vizualize</button>
@@ -152,72 +150,14 @@ function viz(arg0, arg1, arg2, arg3, arg4, arg5) {
     })
 
     // Have filtered 'items' based on city, #reviews and rating (stars)
-    // Find all objects open on user-specified day of week (arg5) and time (arg0)        
+    // Find all objects with a category element matching user input 'arg0'
 
-    var filter_days = _.filter(filter_stars, function(d) {
-        if (arg5 == 'Sunday') {
-            if ( _.isUndefined(d.hours.Sunday) ) { return 0 }
-            else { return 1 }
-        }
-        else if (arg5 == 'Monday') {
-            if ( _.isUndefined(d.hours.Monday) ) { return 0 }
-            else { return 1 }
-        }
-        else if (arg5 == 'Tuesday') {
-            if ( _.isUndefined(d.hours.Tuesday) ) { return 0 }
-            else { return 1 }
-        }
-        else if (arg5 == 'Wednesday') {
-            if ( _.isUndefined(d.hours.Wednesday) ) { return 0 }
-            else { return 1 }
-        }
-        else if (arg5 == 'Thursday') {
-            if ( _.isUndefined(d.hours.Thursday) ) { return 0 }
-            else { return 1 }
-        }
-        else if (arg5 == 'Friday') {
-            if ( _.isUndefined(d.hours.Friday) ) { return 0 }
-            else { return 1 }
-        }
-        else if (arg5 == 'Saturday') {
-            if ( _.isUndefined(d.hours.Saturday) ) { return 0 }
-            else { return 1 }
-        }
+    var filter_categories = _.filter(filter_stars, function(f) {
+        return _.some(f.categories, function(d) {
+            return d == arg0
+        })
     })
-
-    var filter_time = _.filter(filter_days, function(d) {
-        var userHour = parseInt(_.first(arg0.split(':'))) 
-        if (userHour == '00') { userHour = '24' }
-        var userMin = parseInt(_.last(arg0.split(':')))
-        var openTime, closeTime
-        var hourOpen, minOpen, hourClose, minClose
-
-        if (arg5 == 'Sunday') { openTime = d.hours.Sunday.open; closeTime = d.hours.Sunday.close }
-        else if (arg5 == 'Monday') { openTime = d.hours.Monday.open; closeTime = d.hours.Monday.close }
-        else if (arg5 == 'Tuesday') { openTime = d.hours.Tuesday.open; closeTime = d.hours.Tuesday.close }
-        else if (arg5 == 'Wednesday') { openTime = d.hours.Wednesday.open; closeTime = d.hours.Wednesday.close }
-        else if (arg5 == 'Thursday') { openTime = d.hours.Thursday.open; closeTime = d.hours.Thursday.close }
-        else if (arg5 == 'Friday') { openTime = d.hours.Friday.open; closeTime = d.hours.Friday.close }
-        else if (arg5 == 'Saturday') { openTime = d.hours.Saturday.open; closeTime = d.hours.Saturday.close }
-
-        openTime = d.hours.Friday.open; closeTime = d.hours.Friday.close;
-        hourOpen = parseInt(_.first(openTime.split(':')))
-        minOpen  = parseInt(_.last(openTime.split(':')))
-        hourClose = parseInt(_.first(closeTime.split(':'))); if (hourClose == 0) { hourClose = 24 }
-        minClose  = parseInt(_.last(closeTime.split(':')))
-        // console.log(hourOpen + ':' + minOpen + '|' + userHour + ':' + userMin + '|' + hourClose + ':' + minClose)
-        if (hourOpen < userHour && userHour < hourClose) 
-            { return 1 }
-        else if (hourOpen == userHour && minOpen <= userMin && userHour < hourClose) 
-            { return 1 }
-        else if (hourOpen == userHour && minOpen <= userMin && userHour == hourClose 
-                 && userMin <= minClose) 
-            { return 1 }
-        else { return 0 }
-
-    })
-
-    var vizData = filter_time
+    var vizData = filter_categories
 
     // Determine if need to sort
 
@@ -226,7 +166,7 @@ function viz(arg0, arg1, arg2, arg3, arg4, arg5) {
     if (arg4 == "Descending" || arg4 == "descending") { sort = -1 }
 
     if (sort) {
-        var vizData = _.sortBy(filter_time, function(d) {
+        var vizData = _.sortBy(filter_categories, function(d) {
             return sort * d.stars
         })
     }
